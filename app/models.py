@@ -30,5 +30,20 @@ class User(db.Model):
   name = db.Column(db.String(10), index = True, unique = True)
   email = db.Column(db.String(120), index = True, unique = True)
 
+  def is_authenticated(self):
+    return True
+
+  def is_activate(self):
+    return True
+
+  def is_anonymous(self):
+    return False
+
+  def get_id(self):
+    try:
+      return unicode(self.id)
+    except NameError:
+      return str(self.id)
+
   def __repr__(self):
     return '<User %r>' % (self.name)
