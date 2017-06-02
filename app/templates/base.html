@@ -1,0 +1,23 @@
+<html>
+  <head>
+    {% if title %}
+    <title> {{title}} - release </title>
+    {% else %}
+    <title> roller - release </title>
+    {% endif %}
+  </head>
+  <body>
+    <div>Administrator: <a href="/index">Clicked</a></div>
+    <hr>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </body>
+</html>
