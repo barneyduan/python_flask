@@ -7,7 +7,12 @@
     {% endif %}
   </head>
   <body>
-    <div>Administrator: <a href="/index">Clicked</a></div>
+    <div>Administrator: 
+      <a href="{{ url_for('index') }}">Clicked</a>
+      {% if g.user.is_authenticated %}
+      <a href="{{ url_for('logout') }}">Logout</a>
+      {% endif %}
+    </div>
     <hr>
     {% with messages = get_flashed_messages() %}
     {% if messages %}
