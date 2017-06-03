@@ -12,13 +12,20 @@ def load_user(id):
 def before_request():
   g.user = current_user
 
+@lm.unauthorized_handler
+def handle_needs_login():
+  flash('You need to be logged')
+  return redirect(url_for('login', next = request.path))
+
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
   user = g.user
-  return render_template("index.html",
-    title =  'Home',
+  notes = Note.query.all()
+  return render_template('userpage.html',
+    title = 'UserPage',
+    notes = notes, 
     user = user)
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -35,19 +42,18 @@ def login():
       return redirect(url_for('login'))
     g.user = user
     login_user(user)
-    flash('Logged in successfully')
-    next = request.form.get('next')
-    return redirect(next or url_for('index')) 
+    return  redirect_back('index')
   return render_template('login.html',
-    title='Sign In',
-    form=form)
+    title = 'Sign In',
+    form = form)
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
-@app.route('/userpage')
-@login_required
-def userpage():
-  return
+def redirect_back(home):
+  next = request.args.get('next')
+  if not next:
+    next = url_for(home)
+  return redirect(next)
