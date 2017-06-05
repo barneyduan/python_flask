@@ -1,0 +1,25 @@
+.loginBox{
+	width:450px;
+	height:260px;
+	padding:0 20px;
+	border:1px solid #fff;
+	color:#000;
+	margin-top:40px;
+	border-radius:8px;
+	background:	#F5F5F5;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -210px;
+	margin-top: -165px;
+}
+.loginBox h2{
+	height:45px;
+	font-size:20px;
+	font-weight:normal;
+}
+body {
+	background-image: url(../graph/wallpaper.jpg);
+	background-size:100%;
+	background-repeat: no-repeat;
+}

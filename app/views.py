@@ -2,7 +2,7 @@ from app import app, db, lm
 from flask import render_template, flash, redirect, session, url_for, request, g
 from .forms import LoginForm
 from flask.ext.login import login_user, logout_user, current_user, login_required
-from models import User, Note
+from models import User, Note, Project
 
 @lm.user_loader
 def load_user(id):
@@ -16,17 +16,6 @@ def before_request():
 def handle_needs_login():
   flash('You need to be logged')
   return redirect(url_for('login', next = request.path))
-
-@app.route('/')
-@app.route('/index')
-@login_required
-def index():
-  user = g.user
-  notes = Note.query.all()
-  return render_template('userpage.html',
-    title = 'UserPage',
-    notes = notes, 
-    user = user)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -51,6 +40,31 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+@app.route('/')
+@app.route('/index')
+@login_required
+def index():
+  user = g.user
+  projects = Project.query.all()
+  return render_template('index.html',
+    title = 'Release',
+    projects = projects)
+
+@app.route('/project/<string:name>')
+@login_required
+def project(name):
+  user = g.user
+  projects = Project.query.all()
+  notes = db.session.query(Note, Project).\
+    join(Project, Note.project_id == Project.id).\
+    filter(Project.project_name == name)
+  return render_template('project.html',
+    title = 'Release',
+    projects = projects,
+    results = notes,
+    user = user)
+
 
 def redirect_back(home):
   next = request.args.get('next')

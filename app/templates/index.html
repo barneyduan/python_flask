@@ -1,42 +1,22 @@
 
 {% extends "base.html" %}
-{% block content  %}
+{% block content %}
 <div id="content">
   <div id="left">
     {% if projects %}
     <ul id="project_list">
     {% for p in projects%}
       <li>
-        <a href="" title="{{ p.project_name }}"> {{ p.project_name }}</a>
+        <a href="project/{{ p.project_name }}" title="{{ p.project_name }}"> {{ p.project_name }}</a>
       </li>
     {% endfor %}
     </ul>
     {% endif %}
   </div>
   <div id="information">
-    {% if notes %}
-    {% for note in notes %}
-    <h1>{{ note.project_id.project_name }}{{note.version}}released</h1>
-    <p>
-      <u>{{ note.time }}</u> <u>{{ note.author }}</u>
-    </p>
-    <p>
-      {{ note.note }}
-    </p>
-    <div id="download">
-      <a href=""><span>Download</span></a>
-    </div>
-    {% if note.user_id.authority == 1 %}
-    <div id="release">
-      <a href=""><span>Release</span></a>
-    </div>
-    <div id="cancel">
-      <a href=""><span>Cancel</span></a>
-    </div>
-    {% endif %}
-    <hr>
-    {% endfor %}
-    {% endif %}
+    <h2>About</h2>
+    <p>This is for testing flask</p>
   </div>
+  
 </div>
 {% endblock %}

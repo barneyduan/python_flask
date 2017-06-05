@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container" id="content" style="margin-left:0.5cm;">
+  <div class="row">
+    <div class="col-md-2 col-lg-2">
+    <div id="left">
+      <p style="font-size:110%;"><b>Project Name</b></p>
+       {% if projects %}
+       <ul id="project_list" class="nav nav-pills nav-stacked">
+       {% for p in projects%}
+         <li>
+           <a href="{{ p.project_name }}" title="{{ p.project_name }}"> {{ p.project_name }}</a>
+         </li>
+       {% endfor %}
+       </ul>
+       {% endif %}
+    </div>
+    </div>
+    <div class="col-md-10 col-col-lg-10" id="information" style="border-left:1px solid #ccc;">
+      {% if results %}
+      {% for item in results %}
+      <div class="item">
+        <h2>{{ item['Project'].project_name }}&nbsp;&nbsp;{{ item['Note'].version }}&nbsp;&nbsp;released</h2>
+        <p>
+          <u>{{ item['Note'].time.strftime('%Y-%m-%d %H:%m:%S') }}</u>&nbsp;&nbsp;&nbsp;&nbsp;{{ item['Note'].author }}
+        </p>
+        <p>
+          {{ item['Note'].note }}
+        </p>
+        <div id="buttons">
+          <a href="" class="btn btn-primary" style="width:90px;">Download</a>
+          {% if user.authority == 1 %}
+          <a href="" class="btn btn-success" style="width:90px;">Release</a>
+          <a href="" class="btn btn-warning" style="width:90px;">Cancel</a>
+          {% endif %}     
+        </div>  
+        <hr>
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock%}
