@@ -18,8 +18,12 @@
 	font-size:20px;
 	font-weight:normal;
 }
-body {
-	background-image: url(../graph/wallpaper.jpg);
-	background-size:100%;
-	background-repeat: no-repeat;
+
+.user-gravatar img{
+	height:19px;
+	width:19px;
+	margin-top:-3px;
+	border-radius:50%;
+	vertical-align:middle;
 }
+

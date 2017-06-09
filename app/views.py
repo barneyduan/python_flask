@@ -1,8 +1,8 @@
 from app import app, db, lm
 from flask import render_template, flash, redirect, session, url_for, request, g
 from .forms import LoginForm
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from models import User, Note, Project
+from flask_login import login_user, logout_user, current_user, login_required
+from models import *
 
 @lm.user_loader
 def load_user(id):
@@ -11,6 +11,7 @@ def load_user(id):
 @app.before_request
 def before_request():
   g.user = current_user
+  g.role = Role.query.filter(Role.id == g.user.role_id)
 
 @lm.unauthorized_handler
 def handle_needs_login():
@@ -46,7 +47,7 @@ def logout():
 @login_required
 def index():
   user = g.user
-  projects = Project.query.all()
+  projects = search_author_project(user)
   return render_template('index.html',
     title = 'Release',
     projects = projects)
@@ -55,7 +56,7 @@ def index():
 @login_required
 def project(name):
   user = g.user
-  projects = Project.query.all()
+  projects = search_author_project(user)
   notes = db.session.query(Note, Project).\
     join(Project, Note.project_id == Project.id).\
     filter(Project.project_name == name)
@@ -71,3 +72,14 @@ def redirect_back(home):
   if not next:
     next = url_for(home)
   return redirect(next)
+
+def search_author_project(user):
+	if user is None:
+		return None
+	if user.role_id == 1:
+		return Project.query.all()
+	else:
+		projects_index = db.session.query(ProjectUserRole.project_id).\
+		  filter(ProjectUserRole.user_id == user.id)
+		return db.session.query(Project).\
+		  filter(Project.id.in_([index.project_id for index in projects_index]))

@@ -1,22 +1,26 @@
 
 {% extends "base.html" %}
 {% block content %}
-<div id="content">
-  <div id="left">
-    {% if projects %}
-    <ul id="project_list">
-    {% for p in projects%}
-      <li>
-        <a href="project/{{ p.project_name }}" title="{{ p.project_name }}"> {{ p.project_name }}</a>
-      </li>
-    {% endfor %}
-    </ul>
-    {% endif %}
+<div class="container" id="content" style="margin-left:0.5cm;">
+  <div class="row" style="height:100%">
+    <div class="col-md-2 col-lg-2">
+    <div id="left">
+      <p style="font-size:110%;"><b>Project Name</b></p>
+       {% if projects %}
+       <ul id="project_list" class="nav nav-pills nav-stacked">
+       {% for p in projects%}
+         <li>
+           <a href="project/{{ p.project_name }}" title="{{ p.project_name }}"> {{ p.project_name }}</a>
+         </li>
+       {% endfor %}
+       </ul>
+       {% endif %}
+    </div>
+    </div>
+    <div class="col-md-10 col-lg-10" id="information" style="height:100vh;border-left:1px solid #ccc">
+      <h2>About</h2>
+      <p class="text-left">This is for testing flask</p>
+    </div>
   </div>
-  <div id="information">
-    <h2>About</h2>
-    <p>This is for testing flask</p>
-  </div>
-  
 </div>
 {% endblock %}
