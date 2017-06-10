@@ -11,7 +11,7 @@ def load_user(id):
 @app.before_request
 def before_request():
   g.user = current_user
-  g.role = Role.query.filter(Role.id == g.user.role_id)
+  g.role = None
 
 @lm.unauthorized_handler
 def handle_needs_login():
@@ -66,6 +66,16 @@ def project(name):
     results = notes,
     user = user)
 
+@app.route('/admin/<string:role>', methods = ['GET', 'POST'])
+@login_required
+def admin(role):
+	if not check_admin_role(role):
+		flash('Wrong authorized role, Please check again!')
+		return redirect(url_for('index'))
+	user = g.user
+	projects = search_author_project(user)
+	return redirect(url_for('index'))
+
 
 def redirect_back(home):
   next = request.args.get('next')
@@ -83,3 +93,11 @@ def search_author_project(user):
 		  filter(ProjectUserRole.user_id == user.id)
 		return db.session.query(Project).\
 		  filter(Project.id.in_([index.project_id for index in projects_index]))
+
+def check_admin_role(role):
+	if not (role in ['root', 'admin', 'user']):
+		return False
+	user_role = g.user.role.role_name
+	if role != user_role:
+		return False	
+	return True

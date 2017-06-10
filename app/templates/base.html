@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <link href="../static/css/bootstrap.min.css" rel="stylesheet">
     <link href="../static/css/mystyle.css" type="text/css" rel="stylesheet">
+    <script src="../static/javascript/jquery-3.2.1.min.js"></script>
     <script src="../static/javascript/bootstrap.min.js"></script>
   </head>
   <body>
@@ -18,24 +19,23 @@
             <a href="{{ url_for('logout') }}" class="navbar-btn btn btn-default">Logout</a>
           {% endif %}
         </div>
-        <div class="nav navbar-right dropdown" id="header-name">
+        <div class="nav navbar-right" id="header-name">
           {% if g.user.is_authenticated %}
-          <div class="dropdown">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="dropdown-menu-user">
-            <span class="user-gravatar">
-              <img src="../static/graph/default-avatar.png">
-            </span>
-            <span class="user-name-text ng-binding">
-              {{g.user.name}}
-              <span class="caret"></span>
-            </span>
+              <span class="user-gravatar">
+                <img src="../static/graph/default-avatar.png">
+              </span>
+              <span>
+                {{g.user.name}}
+                <span class="caret"></span>
+              </span>
             </a>
-            <ul class="dropdown-menu" role="menu" aria-labelleby="dropdown-menu-user">
+            <ul class="dropdown-menu" role="menu" aria-labelleby="dLabel">
               <li>
-                <p class="text-left">Status:{{g.role.role_name}}</p>
+                <p class="text-left user-role">Status: &nbsp;&nbsp;{{g.user.role.role_name}}</p>
               </li>
               {% if g.user.role_id == 1 %}
-              <li class="divider"></li>
+              <li class="divider" style="margin-top:10px;"></li>
               <li>
                 <a href="#">Switch Admin</a>
               </li>
@@ -44,11 +44,22 @@
               </li>
               {% endif %}
             </ul>
-          </div>
           {% endif %}
-          </div>
+        </div>
       </div>
     </nav>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="alert alert-danger alert-dismissable" aling="center">
+          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+          &times;
+          </button>
+          {% for message in messages %}
+            <b>{{ message }}</b></br>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
     {% block content %}{% endblock %}
   </body>
 </html>
