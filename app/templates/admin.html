@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content%}
-<div class="container" id="content" style="margin-left:0.5cm;">
+<div class="container-fluid" id="content" style="margin-left:0.5cm;">
 	<div class="row">
 		<div class="col-md-2 col-lg-2">
 		<div id="left">
@@ -33,7 +33,7 @@
       	</p>
       	<div id="buttons">
       		<button type="submit" class="btn btn-success" name="btn_enable" value="{{ item['Note'].id }}_enable" style="width:90px;">Release</button>
-      		<button type="submit" class="btn btn-success" name="btn_enable" value="{{ item['Note'].id }}_disenable" style="width:90px;">Cancel</button>
+      		<button type="submit" class="btn btn-warning" name="btn_enable" value="{{ item['Note'].id }}_disenable" style="width:90px;">Cancel</button>
       	</div>	
     	</div>		
 			{% endfor %}
