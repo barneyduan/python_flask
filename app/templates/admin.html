@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content%}
+<div class="container" id="content" style="margin-left:0.5cm;">
+	<div class="row">
+		<div class="col-md-2 col-lg-2">
+		<div id="left">
+		<p style="font-size:110%;"><b>Project Name</b></p>
+			{% if projects %}
+			<form method="post" name="project">
+			{{ form.hidden_tag() }}
+			<ul id="project_list" class="nav nav-pills nav-stacked">
+			{% for p in projects %}
+         <li>
+         {{ form.project_name(value=p.project_name)}}
+         </li>
+      {% endfor %}
+      </ul>
+      </form>
+      {% endif %}
+		</div>
+		</div>
+		<div class="col-md-7 col-lg-7" id="information" style="border-left:1px solid #ccc;border-right:1px solid #ccc;">
+			{% if results %}
+			<form action="" method="post" name="buttons">
+			{% for item in results %}
+			<div class="item">
+      	<h2>{{ item['Project'].project_name }}&nbsp;&nbsp;{{ item['Note'].version }}&nbsp;&nbsp;released</h2>
+      	<p>
+        	<u>{{ item['Note'].time.strftime('%Y-%m-%d %H:%m:%S') }}</u>&nbsp;&nbsp;&nbsp;&nbsp;{{ item['Note'].author }}
+      	</p>
+      	<p>
+      		{{ item['Note'].note }}
+      	</p>
+      	<div id="buttons">
+      		<button type="submit" class="btn btn-success" name="btn_enable" value="{{ item['Note'].id }}_enable" style="width:90px;">Release</button>
+      		<button type="submit" class="btn btn-success" name="btn_enable" value="{{ item['Note'].id }}_disenable" style="width:90px;">Cancel</button>
+      	</div>	
+    	</div>		
+			{% endfor %}
+			</form>
+			{% endif %}
+		</div>
+		<div class="col-md-3 col-lg-3" id="user-manage">
+			{% if members %}
+				<table class="table">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Status</th>
+						<th>Opera</th>
+					</tr>
+				</thead>
+				<tbody>
+				<form action="" method="post" name="delete">
+					{% for m in members %}
+						<tr>
+							<td>{{ m.name }}</td>
+							<td>{{ m.role.role_name }}</td>
+							{% if m.role_id != 1 %}
+								{% if g.user.role_id == 1 or 
+								(g.user.role_id == 2 and m.role_id == 3) %}
+								<td>
+									<button type="submit" class="btn btn-danger" id="delete_user" name="delete_user" value="{{ m.id }}">Del</button>
+								</td>
+								{% endif %}
+							{% endif %}
+						</tr>
+					{% endfor %}
+					</form>
+				</tbody>
+				</table>
+			{% endif %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}

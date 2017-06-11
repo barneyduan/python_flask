@@ -1,6 +1,6 @@
 from app import app, db, lm
 from flask import render_template, flash, redirect, session, url_for, request, g
-from .forms import LoginForm
+from .forms import LoginForm, AdminPanel
 from flask_login import login_user, logout_user, current_user, login_required
 from models import *
 
@@ -69,13 +69,33 @@ def project(name):
 @app.route('/admin/<string:role>', methods = ['GET', 'POST'])
 @login_required
 def admin(role):
-	if not check_admin_role(role):
-		flash('Wrong authorized role, Please check again!')
-		return redirect(url_for('index'))
-	user = g.user
-	projects = search_author_project(user)
-	return redirect(url_for('index'))
-
+  if not check_admin_role(role):
+    flash('Wrong authorized role, Please check again!')
+    return redirect(url_for('index'))
+  user = g.user
+  projects = search_author_project(user)
+  form = AdminPanel()
+  if form.validate_on_submit():
+    project_name = request.form['project_name']
+    project_chosed = Project.query.\
+      filter_by(project_name = project_name).first()
+    notes = db.session.query(Note, Project).\
+      join(Project, Note.project_id == Project.id).\
+      filter(Project.project_name == project_name)
+    project_members = search_project_members(project_chosed)
+    return render_template('admin.html',
+      title = 'Release',
+      projects = projects,
+      results = notes,
+      members = project_members,
+      form = form)
+  else:
+    return render_template('admin.html',
+      title = 'Release',
+      projects = projects,
+      results = None,
+      members = None,
+      form = form)
 
 def redirect_back(home):
   next = request.args.get('next')
@@ -84,20 +104,28 @@ def redirect_back(home):
   return redirect(next)
 
 def search_author_project(user):
-	if user is None:
-		return None
-	if user.role_id == 1:
-		return Project.query.all()
-	else:
-		projects_index = db.session.query(ProjectUserRole.project_id).\
-		  filter(ProjectUserRole.user_id == user.id)
-		return db.session.query(Project).\
-		  filter(Project.id.in_([index.project_id for index in projects_index]))
+  if user is None:
+    return None
+  if user.role_id == 1:
+    return Project.query.all()
+  else:
+    projects_index = db.session.query(ProjectUserRole.project_id).\
+      filter(ProjectUserRole.user_id == user.id)
+    return db.session.query(Project).\
+      filter(Project.id.in_([index.project_id for index in projects_index]))
 
 def check_admin_role(role):
-	if not (role in ['root', 'admin', 'user']):
-		return False
-	user_role = g.user.role.role_name
-	if role != user_role:
-		return False	
-	return True
+  if not (role in ['root', 'admin', 'user']):
+    return False
+  user_role = g.user.role.role_name
+  if role != user_role:
+    return False
+  return True
+
+def search_project_members(project):
+  if project is None:
+    return None
+  user_index = db.session.query(ProjectUserRole.user_id).\
+    filter(ProjectUserRole.project_id == project.id)
+  return db.session.query(User).\
+    filter(User.id.in_([index.user_id for index in user_index]))
